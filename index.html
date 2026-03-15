@@ -1312,7 +1312,7 @@
                 </div>
 
                 <!-- Contact Form — Formspree backend -->
-                <form action="https://formspree.io/f/mlgpwjnj" method="POST" class="contact-form-box" id="contactForm" onsubmit="return false">
+                <form action="https://formspree.io/f/mlgpwjnj" method="POST" class="contact-form-box" id="contactForm">
                     <div class="form-group">
                         <label class="form-label-txt">Your Name</label>
                         <input type="text" name="name" class="form-field" placeholder="John Doe" required />
@@ -1384,37 +1384,4 @@
         mobileMenu.classList.remove('open');
     }
 
-    // Contact form — Formspree
-    const contactForm = document.getElementById('contactForm');
-    const sendBtn = document.getElementById('sendBtn');
-    const formSuccess = document.getElementById('formSuccess');
-    contactForm && contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        sendBtn.textContent = '⏳ Sending...';
-        sendBtn.disabled = true;
-        try {
-            const res = await fetch('https://formspree.io/f/mlgpwjnj', {
-                method: 'POST',
-                body: new FormData(contactForm),
-                headers: { 'Accept': 'application/json' }
-            });
-            if (res.ok) {
-                sendBtn.textContent = '✅ Sent!';
-                formSuccess.style.display = 'block';
-                contactForm.reset();
-                setTimeout(() => {
-                    sendBtn.textContent = '📨 Send Message';
-                    sendBtn.disabled = false;
-                    formSuccess.style.display = 'none';
-                }, 4000);
-            } else {
-                sendBtn.textContent = '❌ Failed. Try again.';
-                sendBtn.disabled = false;
-            }
-        } catch {
-            sendBtn.textContent = '❌ Failed. Try again.';
-            sendBtn.disabled = false;
-        }
-        return false;
-    });
+    // Contact form — Formspree (native submit)
