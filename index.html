@@ -1742,22 +1742,43 @@
     sendBtn.addEventListener('click', sendMessage);
 
     function sendMessage() {
-        const text = input.value.trim();
-        if (!text) return;
-        addMessage('user', text, replyingTo);
-        input.value = '';
-        input.style.height = 'auto';
-        replyingTo = null;
-        replyBar.classList.remove('active');
+  const text = input.value.trim();
+  if (!text) return;
+  addMessage('user', text, replyingTo);
+  input.value = '';
+  input.style.height = 'auto';
+  replyingTo = null;
+  replyBar.classList.remove('active');
 
-        // Show typing — AI reply placeholder (connect to backend later)
-        typing.classList.add('show');
-        scrollBottom();
-        setTimeout(() => {
-            typing.classList.remove('show');
-            addMessage('ai', "I'm still being set up! Soon I'll be able to answer all your questions about Sayem. Stay tuned! 🚀");
-        }, 1200);
-    }
+  typing.classList.add('show');
+  scrollBottom();
+
+  // sessionId তৈরি/পুনরুদ্ধার
+  let sessionId = localStorage.getItem('chat_session_id');
+  if (!sessionId) {
+    sessionId = crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random();
+    localStorage.setItem('chat_session_id', sessionId);
+  }
+
+  fetch('https://sayem-ai-worker.hossainsmsayem.workers.dev/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: text,
+      sessionId: sessionId
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    typing.classList.remove('show');
+    addMessage('ai', data.reply);
+  })
+  .catch(err => {
+    typing.classList.remove('show');
+    addMessage('ai', 'Sorry, I’m having trouble connecting. Please try again later.');
+    console.error(err);
+  });
+}
 })();
 </script>
 
