@@ -954,7 +954,7 @@
         }
         #chatToggle:hover { transform: scale(1.1); box-shadow: 0 12px 40px rgba(56,189,248,0.5); }
         #chatToggle svg { width: 24px; height: 24px; fill: #080f1e; transition: all 0.3s; }
-        #chatToggle.open svg { transform: rotate(90deg); }
+        #chatToggle.open { display: none; }
 
         #chatPanel {
             position: fixed;
@@ -1195,7 +1195,7 @@
             <li><a href="#experience">Experience</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
-        <a href="/cdn-cgi/l/email-protection#21524c524058444c494e525240484f1061464c40484d0f424e4c" class="hire-btn">Hire Me</a>
+        <a href="javascript:void(0)" class="hire-btn" id="navChatBtn">Live Chat</a>
         <div class="hamburger" id="hamburger">
             <span></span><span></span><span></span>
         </div>
@@ -1535,6 +1535,7 @@
     const panel      = document.getElementById('chatPanel');
     const toggle     = document.getElementById('chatToggle');
     const closeBtn   = document.getElementById('chatClose');
+    const navChatBtn = document.getElementById('navChatBtn');
     const messagesEl = document.getElementById('chatMessages');
     const input      = document.getElementById('chatInput');
     const sendBtn    = document.getElementById('chatSend');
@@ -1718,11 +1719,20 @@
         isOpen = false;
         panel.classList.remove('open');
         toggle.classList.remove('open');
+        toggle.style.display = '';
         toggle.innerHTML = `<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>`;
     }
 
     toggle.addEventListener('click', () => isOpen ? closeChat() : openChat());
-    closeBtn.addEventListener('click', closeChat);
+    closeBtn && closeBtn.addEventListener('click', closeChat);
+    navChatBtn && navChatBtn.addEventListener('click', () => isOpen ? closeChat() : openChat());
+
+    // Click outside panel to close
+    document.addEventListener('click', e => {
+        if (isOpen && !panel.contains(e.target) && e.target !== toggle && e.target !== navChatBtn) {
+            closeChat();
+        }
+    });
 
     // Restore history
     if (history.length > 0) {
@@ -1742,43 +1752,39 @@
     sendBtn.addEventListener('click', sendMessage);
 
     function sendMessage() {
-  const text = input.value.trim();
-  if (!text) return;
-  addMessage('user', text, replyingTo);
-  input.value = '';
-  input.style.height = 'auto';
-  replyingTo = null;
-  replyBar.classList.remove('active');
+        const text = input.value.trim();
+        if (!text) return;
+        addMessage('user', text, replyingTo);
+        input.value = '';
+        input.style.height = 'auto';
+        replyingTo = null;
+        replyBar.classList.remove('active');
 
-  typing.classList.add('show');
-  scrollBottom();
+        typing.classList.add('show');
+        scrollBottom();
 
-  // sessionId তৈরি/পুনরুদ্ধার
-  let sessionId = localStorage.getItem('chat_session_id');
-  if (!sessionId) {
-    sessionId = crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random();
-    localStorage.setItem('chat_session_id', sessionId);
-  }
+        let sessionId = localStorage.getItem('chat_session_id');
+        if (!sessionId) {
+            sessionId = crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random();
+            localStorage.setItem('chat_session_id', sessionId);
+        }
 
-  fetch('https://sayem-ai-worker.hossainsmsayem.workers.dev/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message: text,
-      sessionId: sessionId
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    typing.classList.remove('show');
-    addMessage('ai', data.reply);
-  })
-  .catch(err => {
-    typing.classList.remove('show');
-    addMessage('ai', 'Sorry, I’m having trouble connecting. Please try again later.');
-    console.error(err);
-  });
-}
+        fetch('https://sayem-ai-worker.hossainsmsayem.workers.dev/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text, sessionId: sessionId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            typing.classList.remove('show');
+            addMessage('ai', data.reply || 'Sorry, something went wrong.');
+        })
+        .catch(err => {
+            typing.classList.remove('show');
+            addMessage('ai', "Sorry, I'm having trouble connecting. Please try again later.");
+            console.error(err);
+        });
+    }
 })();
 </script>
 
