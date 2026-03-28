@@ -2335,17 +2335,25 @@
                 typing.classList.add('show'); scrollBottom();
                 let sid = localStorage.getItem('chat_session_id');
                 if (!sid) { sid = crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random(); localStorage.setItem('chat_session_id', sid); }
+
                 fetch('https://notion-api.hossainsmsayem.workers.dev/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        question: text, // আমরা Worker-এ 'question' নাম দিয়েছিলাম
+                        message: text, // আমরা Worker-এ 'message' অথবা 'question' রিসিভ করার কোড দিয়েছিলাম
                         sessionId: sid
                     })
                 })
                     .then(r => r.json())
-                    .then(d => { typing.classList.remove('show'); addMessage('ai', d.reply || 'Something went wrong.'); })
-                    .catch(() => { typing.classList.remove('show'); addMessage('ai', 'Having trouble connecting. Please try again.'); });
+                    .then(d => {
+                        typing.classList.remove('show');
+                        // এখানে d.reply এর বদলে d.answer হবে, কারণ আমাদের নতুন Worker 'answer' পাঠায়
+                        addMessage('ai', d.answer || 'Something went wrong.');
+                    })
+                    .catch(() => {
+                        typing.classList.remove('show');
+                        addMessage('ai', 'Having trouble connecting. Please try again.');
+                    });
             }
 
             // Contact form
