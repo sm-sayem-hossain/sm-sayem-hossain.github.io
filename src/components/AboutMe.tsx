@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import DecayCard from "./DecayCard";
+import Lanyard from "./Lanyard";
 
 export default function AboutMe() {
   return (
@@ -11,29 +11,30 @@ export default function AboutMe() {
         About Me
       </h2>
 
-      {/* Two-column layout: DecayCard left, text right */}
-      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 lg:gap-12 items-center">
-        {/* ── LEFT: WebGL DecayCard ── */}
-        <div className="flex justify-center md:justify-start">
-          <DecayCard
-            image="/images/about_profile.jpg"
-            width={360}
-            height={460}
-            intensity={0.5}
-            sensitivity={0.5}
-            hoverDecay={0.05}
-            recovery={0.6}
-            idle={0.35}
-            grain={0.25}
-            detail={5}
-            pattern={4}
-            flow={0}
-            chroma={0}
-            travel={50}
-            tilt={10}
-            scope="window"
-            radius={0}
-            grayscale={false}
+      {/* Two-column layout: 3D Lanyard left, text right */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        {/* ── LEFT: Interactive 3D Lanyard Card ── */}
+        <div className="w-full h-[460px] sm:h-[540px]">
+          <Lanyard
+            frontImage="/images/about_profile.jpg"
+            backImage="/images/about_profile.jpg"
+            imageFit="cover"
+            cardColor="#ffffff"
+            orientation="portrait"
+            finish="glossy"
+            cornerRadius={0.3}
+            size={0.6}
+            anchor="center"
+            strapLength={0.5}
+            strapColor="#111111"
+            strapWidth={0.65}
+            metal="silver"
+            gravity={1}
+            damping={0.5}
+            elasticity={0.5}
+            breeze={0.5}
+            interactive
+            intro
           />
         </div>
 
