@@ -164,7 +164,7 @@ export default function Hero() {
                   href="#about"
                   className="bg-brand-orange text-white px-8 py-3.5 rounded-lg font-bold text-sm hover:bg-brand-orange-light shadow-[0_8px_30px_rgba(224,100,49,0.3)] hover:shadow-[0_8px_30px_rgba(224,100,49,0.5)] transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 cursor-pointer inline-block"
                 >
-                  Learn more
+                  About me
                 </a>
               </div>
             </div>
@@ -185,7 +185,7 @@ export default function Hero() {
 
           {/* Footer Area with Scroll Down Text */}
           <div className="relative z-10 flex items-center h-16 mt-6 lg:mt-0">
-            <div className="flex flex-col items-center gap-2 select-none absolute left-0 lg:left-[14%] bottom-0">
+            <div className="flex flex-col items-center gap-2 select-none absolute left-0 bottom-0">
               <span 
                 className="text-[9px] sm:text-[10px] tracking-[0.25em] text-zinc-500 uppercase font-bold"
                 style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}

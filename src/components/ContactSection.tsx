@@ -140,6 +140,13 @@ export default function ContactSection() {
               </div>
 
               <div className="flex flex-row items-center gap-3">
+                <span className="text-white font-semibold w-20 shrink-0">Phone:</span>
+                <a href="tel:+8801610288868" className="text-zinc-400 hover:text-white transition-colors">
+                  +8801610288868
+                </a>
+              </div>
+
+              <div className="flex flex-row items-center gap-3">
                 <span className="text-white font-semibold w-20 shrink-0">Portfolio:</span>
                 <a
                   href="https://sm-sayem-hossain.github.io"
